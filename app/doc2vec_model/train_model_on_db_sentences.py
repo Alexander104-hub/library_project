@@ -31,7 +31,7 @@ def train_model(book_db):
     for sentence in sentences:
         word_combinations += get_word_combinations(sentence)
     tagged_doc = get_tagged_doc(word_combinations)
-    model = doc2vec.Doc2Vec(vector_size=50, min_count=2, epochs=40)
+    model = doc2vec.Doc2Vec(vector_size=50, min_count=2, epochs=10)
     model.build_vocab(tagged_doc)
     model.train(tagged_doc, total_examples=model.corpus_count, epochs=model.epochs)
     model.save('doc2vec_model')
