@@ -6,15 +6,21 @@ from nltk.stem.snowball import SnowballStemmer
 from pymongo import MongoClient
 from random_object_id import generate
 
-stemmer = SnowballStemmer("russian") 
+stemmer_ru = SnowballStemmer("russian") 
+stemmer_en = SnowballStemmer("english") 
 russian_stopwords = stopwords.words("russian")
 english_stopwords = stopwords.words('english')
 
-custom_rus_stemmed_stop_words = ['занят', 'модул']
+custom_rus_stemmed_stop_words = ['занят', 'модул', 'q', 'w', 'e', 'r', 't', 'o', 'i', 'p','s', 'd', 'f', 'g','h', 'j', 'k', 'l','z', 'x', 'c', 'v','b', 'n', 'm', 'й','ц', 'у', 'к', 'е','н', 'г', 'ш', 'щ','з', 'х', 'ъ', 'ф','ы', 'п', 'р', 'л','д', 'ж', 'э', 'ч','с', 'м', 'т', 'ь','б', 'ю']
 
 english_words = set(words.words())
 morph = pymorphy2.MorphAnalyzer()
 
+def stem(word: str):
+    if word in english_words:
+        return stemmer_en.stem(word)
+    else:
+        return stemmer_ru.stem(word)
 
 def is_valid_word(word):
     if word in english_stopwords or word in russian_stopwords:
@@ -32,7 +38,7 @@ def get_sentence_list(contents):
 
 def get_norm_sentence(sentence):
     sentence = re.findall(r'\b[а-яёa-z]+\b', sentence)
-    sentence = [stemmer.stem(word) for word in sentence if is_valid_word(word)]
+    sentence = [stem(word) for word in sentence if is_valid_word(word)]
     sentence = [word for word in sentence if word not in custom_rus_stemmed_stop_words]
     if len(sentence) > 1:
         return sentence
